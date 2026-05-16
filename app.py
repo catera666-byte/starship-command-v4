@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 import time
 import base64
+import os
+import streamlit.components.v1 as components
 
 # --- STREAMLIT PAGE INITIALIZATION ---
 st.set_page_config(
@@ -13,16 +15,15 @@ st.set_page_config(
 )
 
 # --- IMAGE TO BASE64 CONVERTER ---
-def get_base64_image(img_path):
-    try:
-        with open(img_path, "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode()
-    except FileNotFoundError:
-        return ""
+def get_base64_image():
+    possible_files = ["unnamed (1).png", "Gemini_Generated_Image_xrc9caxrc9caxrc9.png"]
+    for img_path in possible_files:
+        if os.path.exists(img_path):
+            with open(img_path, "rb") as image_file:
+                return base64.b64encode(image_file.read()).decode()
+    return ""
 
-# Target image link
-img_name = "Gemini_Generated_Image_xrc9caxrc9caxrc9.png"
-img_base64 = get_base64_image(img_name)
+img_base64 = get_base64_image()
 
 # --- ADVANCED HUD STYLING GRID ---
 st.markdown(f"""
@@ -33,7 +34,6 @@ st.markdown(f"""
         background-color: #020617;
     }}
     
-    /* The main bridge viewfinder frame */
     .viewfinder-container {{
         position: relative;
         width: 100%;
@@ -51,7 +51,6 @@ st.markdown(f"""
         opacity: 0.85;
     }}
     
-    /* FIXED POSITION HUD FLOATING MATRIX OVERLAY */
     .hud-overlay {{
         position: absolute;
         top: 0;
@@ -62,12 +61,11 @@ st.markdown(f"""
         font-family: 'Share Tech Mono', monospace;
     }}
     
-    /* Total System Value Card - Mounted top left */
     .hud-panel-left {{
         position: absolute;
         top: 25px;
         left: 25px;
-        background: rgba(6, 18, 36, 0.75);
+        background: rgba(6, 18, 36, 0.8);
         backdrop-filter: blur(6px);
         border: 1px solid rgba(0, 240, 255, 0.4);
         padding: 12px 18px;
@@ -76,13 +74,12 @@ st.markdown(f"""
         box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
     }}
     
-    /* Live Wallet Counter - Mounted top center */
     .hud-panel-center {{
         position: absolute;
         top: 25px;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(6, 18, 36, 0.75);
+        background: rgba(6, 18, 36, 0.8);
         backdrop-filter: blur(6px);
         border: 1px solid rgba(167, 139, 250, 0.4);
         padding: 12px 18px;
@@ -91,12 +88,11 @@ st.markdown(f"""
         box-shadow: 0 0 15px rgba(167, 139, 250, 0.2);
     }}
     
-    /* In-Transit Panel - Mounted top right */
     .hud-panel-right {{
         position: absolute;
         top: 25px;
         right: 25px;
-        background: rgba(6, 18, 36, 0.75);
+        background: rgba(6, 18, 36, 0.8);
         backdrop-filter: blur(6px);
         border: 1px solid rgba(57, 255, 20, 0.4);
         padding: 12px 18px;
@@ -105,19 +101,20 @@ st.markdown(f"""
         box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
     }}
     
-    .hud-label {{ font-size: 11px; color: #94a3b8; tracking-wider: 1px; text-transform: uppercase; }}
-    .hud-value-cyan {{ font-size: 24px; font-weight: bold; color: #00f0ff; font-family: 'Orbitron', sans-serif; margin: 2px 0; }}
-    .hud-value-purple {{ font-size: 22px; font-weight: bold; color: #c084fc; font-family: 'Orbitron', sans-serif; margin: 2px 0; }}
-    .hud-value-green {{ font-size: 20px; font-weight: bold; color: #39ff14; font-family: 'Orbitron', sans-serif; margin: 2px 0; }}
+    .hud-label {{ font-size: 11px; color: #94a3b8; text-transform: uppercase; }}
+    .hud-value-cyan {{ font-size: 24px; font-weight: bold; color: #00f0ff; font-family: 'Orbitron', sans-serif; }}
+    .hud-value-purple {{ font-size: 22px; font-weight: bold; color: #c084fc; font-family: 'Orbitron', sans-serif; }}
+    .hud-value-green {{ font-size: 20px; font-weight: bold; color: #39ff14; font-family: 'Orbitron', sans-serif; }}
     .hud-sub {{ font-size: 11px; color: #64748b; }}
     </style>
 """, unsafe_allow_html=True)
 
-# --- TITLE CONTROL MATRICES ---
+# --- SYSTEM HEADERS ---
 st.markdown("<h2 style='text-align: center; color: #00f0ff; font-family:\"Orbitron\"; letter-spacing: 3px;'>UNIFIED BOT COMMAND CENTER</h2>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: #475569; font-family:\"Share Tech Mono\"; margin-top:-10px;'>CORE VIEWPORT INTERFACE // MCv4</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #475569; font-family:\"Share Tech Mono\"; margin-top:-10px;'>TACTICAL CONTROL MATRIX // MCv4</p>", unsafe_allow_html=True)
 
-# --- MAIN BRIDGE STRUCTURAL VIEWPORT ---
+st.markdown('<div id="system-status-bar">', unsafe_allow_html=True)
+# --- MAIN ENGINE VIEWPORT ---
 if img_base64:
     st.markdown(f"""
         <div class="viewfinder-container">
@@ -142,22 +139,73 @@ if img_base64:
         </div>
     """, unsafe_allow_html=True)
 else:
-    st.error("⚠️ Background image asset missing!")
+    st.warning("⚠️ Background image asset missing! Running interface in standalone wireframe mode.")
+st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown("<br>", unsafe_allowed_code=False if 'unsafe_allowed_code' in dir() else True) # Quick fallback protection
+st.markdown("<br>", unsafe_allow_html=True)
 
-# --- SYSTEM MODES & TOGGLES ---
-st.markdown("<h3 style='color:#00f0ff; font-family:\"Orbitron\";'>// CRITICAL PROTOCOLS</h3>", unsafe_allow_html=True)
-col1, col2 = st.columns(2)
+# --- RUNTIME MODES ---
+st.markdown("<h3 style='color:#00f0ff; font-family:\"Orbitron\";'>// CRITICAL INTERFACES & SUB-ROUTINES</h3>", unsafe_allow_html=True)
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    st.write("🎯 **SNIPER MODE DEPLOYMENT**")
-    sniper_toggle = st.toggle("INITIALIZE TARGET RUNTIME", value=True)
-    if sniper_toggle:
-        st.info("Scanning chain blocks: Target liquidity pool locked.")
+    st.markdown("🎯 **SNIPER MODE**")
+    st.toggle("INITIALIZE SNIPER", value=True, key="sniper_mode")
 
 with col2:
-    st.write("👻 **STEALTH OBFUSCATION MATRIX**")
-    stealth_toggle = st.toggle("ACTIVATE RPC MEV PROTECT", value=False)
-    if stealth_toggle:
-        st.success("Encrypted darkpool routing fully operational.")
+    st.markdown("👻 **STEALTH MODE**")
+    st.toggle("ACTIVATE MEV PROTECT", value=False, key="stealth_mode")
+
+with col3:
+    st.markdown("🕶️ **INCOGNITO PROTOCOL**")
+    st.toggle("ENCRYPT TELEMETRY", value=False, key="incog_mode")
+
+with col4:
+    st.markdown("🔌 **OFFLINE ISOLATION**")
+    st.toggle("AIR-GAP PLATFORM", value=False, key="offline_mode")
+
+st.markdown("---")
+
+# --- VARIABLE WITHDRAWAL SYSTEM ---
+st.markdown("<h3 style='color:#00f0ff; font-family:\"Orbitron\";'>// VARIABLE WITHDRAWAL MANAGEMENT VAULT</h3>", unsafe_allow_html=True)
+w_left, w_right = st.columns([2, 1])
+
+with w_left:
+    st.markdown('<div id="unified-transfer-matrix">', unsafe_allow_html=True)
+    network_selection = st.selectbox("Target Network Pool Location:", ["Solana Mainnet", "Ethereum Mainnet"])
+    destination_wallet = st.text_input("Vault Destination Address Pointer:", value="SolHQ115vP...k92m" if "Solana" in network_selection else "0x8f3a8b...09e2")
+    withdrawal_amount = st.slider("Allocation Percentage Amount to Drain:", min_value=0, max_value=100, value=25)
+    
+    if st.button("🚀 EXECUTE SECURE ASSET EXTRACTION PROTOCOL", use_container_width=True):
+        st.success(f"Processing structural extraction payload...")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with w_right:
+    st.markdown('<div id="actual-holdings-fiat">', unsafe_allow_html=True)
+    st.table(pd.DataFrame({
+        "Asset Token": ["SOL", "ETH"],
+        "Available Value": ["245.10 SOL", "14.85 ETH"]
+    }))
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# --- INJECTING YOUR JAVASCRIPT STATE ENGINE ---
+js_bridge = """
+<script>
+const getFinalDashboardState = () => {
+    const p = window.parent.document;
+    return {
+        html: {
+            statusBar: p.getElementById('system-status-bar')?.innerHTML || 'No Status Element Found',
+            transferMatrix: p.getElementById('unified-transfer-matrix')?.innerHTML || 'No Matrix Element Found',
+            holdings: p.getElementById('actual-holdings-fiat')?.innerHTML || 'No Holdings Element Found'
+        }
+    };
+};
+console.log("[BRIDGE] Script active. Initializing state capture matrix...");
+setInterval(() => {
+    const data = getFinalDashboardState();
+    console.log("[LIVE STATE PACKET]:", data);
+}, 3000);
+</script>
+"""
+components.html(js_bridge, height=0)
